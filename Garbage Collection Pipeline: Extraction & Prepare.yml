@@ -1,0 +1,27 @@
+resources:
+  jobs:
+    Garbage_Collection_Pipeline_Extraction_Prepare:
+      name: "Garbage Collection Pipeline: Extraction & Prepare"
+      trigger:
+        pause_status: UNPAUSED
+        file_arrival:
+          url: /Volumes/workspace/default/garabage_collection_volume/raw/
+      tasks:
+        - task_key: Extraction
+          notebook_task:
+            notebook_path: /Workspace/Users/riclimpe@gmail.com/fiap-data-integration-e-pipelines/extract_data
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: Prepare
+          depends_on:
+            - task_key: Extraction
+          notebook_task:
+            notebook_path: /Workspace/Users/riclimpe@gmail.com/fiap-data-integration-e-pipelines/prepare_data
+            source: WORKSPACE
+      queue:
+        enabled: true
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+      performance_target: PERFORMANCE_OPTIMIZED
